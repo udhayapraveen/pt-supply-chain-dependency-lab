@@ -7,7 +7,7 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "pt-sc-logger": "^1.0.0"
+    "pt-sc-logger": "^1.0.1"
   },
   "license": "MIT"
 }
