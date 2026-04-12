@@ -1,6 +1,6 @@
 {
   "name": "pt-sc-demo-app",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Supply chain demo application",
   "main": "app.js",
   "scripts": {
