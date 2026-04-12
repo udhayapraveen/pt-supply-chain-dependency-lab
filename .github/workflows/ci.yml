@@ -1,10 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches: [master, main]
   pull_request:
-    branches: [master, main]
+  push:
+    branches: [main, master]
 
 permissions:
   contents: read
@@ -12,21 +11,29 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      DUMMY_API_KEY: ${{ secrets.DUMMY_API_KEY }}
+      DUMMY_TOKEN: ${{ secrets.DUMMY_TOKEN }}
+
     steps:
-      - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@f808768d1510423e83855289c910610ca9b43176 # v2.17.0
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: "20"
+      - name: Verify secrets loaded
+        run: |
+          test -n "$DUMMY_API_KEY"
+          test -n "$DUMMY_TOKEN"
+          echo "Secrets available"
 
-      - name: Install dependencies
-        run: npm install
+      - name: Test outbound request
+        run: |
+          curl -v https://httpbin.org/get \
+            -H "Authorization: Bearer $DUMMY_TOKEN"
 
-      - name: Run app
-        run: npm start
+      - name: Done
+        run: echo "Workflow complete"
